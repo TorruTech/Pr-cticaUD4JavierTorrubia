@@ -1,6 +1,8 @@
 package gui;
 
+import base.Actividad;
 import base.Evento;
+import base.Organizador;
 import util.Util;
 
 import javax.swing.event.ListSelectionEvent;
@@ -29,9 +31,9 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
             vista.itemConectar.setText("Desconectar");
             vista.setTitle("App eventos - <CONECTADO>");
             setBotonesActivados(true);
-            listarProductos();
-            listarEmpleados();
-            listarDepartamentos();
+            listarEventos();
+            listarActividades();
+            listarOrganizadores();
         } catch (Exception ex) {
             Util.mostrarMensajeError("Imposible establecer conexión con el servidor.");
         }
@@ -74,9 +76,9 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
                         vista.itemConectar.setText("Desconectar");
                         vista.setTitle("App eventos - <CONECTADO>");
                         setBotonesActivados(true);
-                        listarProductos();
-                        listarEmpleados();
-                        listarDepartamentos();
+                        listarEventos();
+                        listarActividades();
+                        listarOrganizadores();
                     } else {
                         modelo.desconectar();
                         vista.itemConectar.setText("Conectar");
@@ -110,10 +112,10 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
                     Util.mostrarMensajeError("No ha sido posible insertar el producto en la base de datos.\n" +
                             "Compruebe que los campos contengan el tipo de dato requerido.");
                 }
-                listarProductos();
+                listarEventos();
                 break;
 
-            case "modProducto":
+            case "modEvento":
                 if (vista.listProductos.getSelectedValue() != null) {
                     if (comprobarCamposEvento()) {
                         Producto producto = vista.listProductos.getSelectedValue();
@@ -126,24 +128,24 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
                         Util.mostrarMensajeError("No ha sido posible modificar el producto en la base de datos.\n" +
                                 "Compruebe que los campos contengan el tipo de dato requerido.");
                     }
-                    listarProductos();
+                    listarEventos();
                 } else {
                     Util.mostrarMensajeError("No hay ningún elemento seleccionado.");
                 }
                 break;
 
-            case "delProducto":
-                if (vista.listProductos.getSelectedValue() != null) {
-                    modelo.eliminarObjeto(vista.listProductos.getSelectedValue());
-                    listarProductos();
+            case "delEvento":
+                if (vista.listEventos.getSelectedValue() != null) {
+                    modelo.eliminarObjeto(vista.listEventos.getSelectedValue());
+                    listarEventos();
                     limpiarCamposEvento();
                 } else {
                     Util.mostrarMensajeError("No hay ningún elemento seleccionado.");
                 }
                 break;
 
-            case "addEmpleado":
-                if (comprobarCamposEmpleado()) {
+            case "addActividad":
+                if (comprobarCamposActividad()) {
                     modelo.guardarObjeto(new Empleado(vista.descripcionActividadTxt.getText(),
                             vista.duracionActividadTxt.getText(),
                             vista.dateNacimientoEmpleado.getDate()));
@@ -152,12 +154,12 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
                     Util.mostrarMensajeError("No ha sido posible insertar el empleado en la base de datos.\n" +
                             "Compruebe que los campos contengan el tipo de dato requerido.");
                 }
-                listarEmpleados();
+                listarActividades();
                 break;
 
-            case "modEmpleado":
+            case "modActividad":
                 if (vista.listEmpleados.getSelectedValue() != null) {
-                    if (comprobarCamposEmpleado()) {
+                    if (comprobarCamposActividad()) {
                         Empleado empleado = vista.listEmpleados.getSelectedValue();
                         empleado.setNombre(vista.descripcionActividadTxt.getText());
                         empleado.setApellidos(vista.duracionActividadTxt.getText());
@@ -168,36 +170,36 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
                         Util.mostrarMensajeError("No ha sido posible modificar el empleado en la base de datos.\n" +
                                 "Compruebe que los campos contengan el tipo de dato requerido.");
                     }
-                    listarEmpleados();
+                    listarActividades();
                 } else {
                     Util.mostrarMensajeError("No hay ningún elemento seleccionado.");
                 }
                 break;
 
-            case "delEmpleado":
-                if (vista.listEmpleados.getSelectedValue() != null) {
-                    modelo.eliminarObjeto(vista.listEmpleados.getSelectedValue());
-                    listarEmpleados();
+            case "delActividad":
+                if (vista.listActividades.getSelectedValue() != null) {
+                    modelo.eliminarObjeto(vista.listActividades.getSelectedValue());
+                    listarActividades();
                     limpiarCamposActividad();
                 } else {
                     Util.mostrarMensajeError("No hay ningún elemento seleccionado.");
                 }
                 break;
 
-            case "addDepartamento":
-                if (comprobarCamposDepartamento()) {
+            case "addOrganizador":
+                if (comprobarCamposOrganizador()) {
                     modelo.guardarObjeto(new Departamento(vista.txtDepartamento.getText()));
                     limpiarCamposOrganizador();
                 } else {
                     Util.mostrarMensajeError("No ha sido posible insertar el departamento en la base de datos.\n" +
                             "Compruebe que los campos contengan el tipo de dato requerido.");
                 }
-                listarDepartamentos();
+                listarOrganizadores();
                 break;
 
-            case "modDepartamento":
+            case "modOrganizador":
                 if (vista.listDepartamentos.getSelectedValue() != null) {
-                    if (comprobarCamposDepartamento()) {
+                    if (comprobarCamposOrganizador()) {
                         Departamento departamento = vista.listDepartamentos.getSelectedValue();
                         departamento.setDepartamento(vista.txtDepartamento.getText());
                         modelo.modificarObjeto(departamento);
@@ -206,16 +208,16 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
                         Util.mostrarMensajeError("No ha sido posible modificar el departamento en la base de datos.\n" +
                                 "Compruebe que los campos contengan el tipo de dato requerido.");
                     }
-                    listarDepartamentos();
+                    listarOrganizadores();
                 } else {
                     Util.mostrarMensajeError("No hay ningún elemento seleccionado.");
                 }
                 break;
 
-            case "delDepartamento":
-                if (vista.listDepartamentos.getSelectedValue() != null) {
-                    modelo.eliminarObjeto(vista.listDepartamentos.getSelectedValue());
-                    listarDepartamentos();
+            case "delOrganizador":
+                if (vista.listOrganizadores.getSelectedValue() != null) {
+                    modelo.eliminarObjeto(vista.listOrganizadores.getSelectedValue());
+                    listarOrganizadores();
                     limpiarCamposOrganizador();
                     break;
                 } else {
@@ -226,20 +228,20 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getSource() == vista.txtBuscarProducto) {
-            listarProductosBusqueda(modelo.getProductos(vista.txtBuscarProducto.getText()));
-            if (vista.txtBuscarProducto.getText().isEmpty()) {
-                vista.dlmProductosBusqueda.clear();
+        if (e.getSource() == vista.txtBuscarEvento) {
+            listarEventoBusqueda(modelo.getEventos(vista.txtBuscarEvento.getText()));
+            if (vista.txtBuscarEvento.getText().isEmpty()) {
+                vista.dlmEventosBusqueda.clear();
             }
         } else if (e.getSource() == vista.txtBuscarActividades) {
-            listarEmpleadosBusqueda(modelo.getEmpleados(vista.txtBuscarActividades.getText()));
+            listarActividadBusqueda(modelo.getActividades(vista.txtBuscarActividades.getText()));
             if (vista.txtBuscarActividades.getText().isEmpty()) {
-                vista.dlmEmpleadosBusqueda.clear();
+                vista.dlmActividadBusqueda.clear();
             }
-        } else if (e.getSource() == vista.txtBuscarDepartamento) {
-            listarDepartamentosBusqueda(modelo.getDepartamentos(vista.txtBuscarDepartamento.getText()));
-            if (vista.txtBuscarDepartamento.getText().isEmpty()) {
-                vista.dlmDepartamentosBusqueda.clear();
+        } else if (e.getSource() == vista.txtBuscarOrganizador) {
+            listarOrganizadorBusqueda(modelo.getDepartamentos(vista.txtBuscarOrganizador.getText()));
+            if (vista.txtBuscarOrganizador.getText().isEmpty()) {
+                vista.dlmOrganizadorBusqueda.clear();
             }
         }
     }
@@ -252,39 +254,48 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
                 vista.nombreEventoTxt.setText(evento.getNombre());
                 vista.fechaEventoDPicker.setText(evento.getFecha().toString());
                 vista.precioEventoTxt.setText(String.valueOf(evento.getPrecio()));
-                vista.organizadorComboBox.setSelectedItem(evento.getOrganizador());
+                vista.organizadorComboBox.setSelectedItem(evento.getOrganizadorId().toString());
             }
-        } else if (e.getSource() == vista.listEmpleados) {
-            if (vista.listEmpleados.getSelectedValue() != null) {
-                Empleado empleado = vista.listEmpleados.getSelectedValue();
-                vista.descripcionActividadTxt.setText(empleado.getNombre());
-                vista.duracionActividadTxt.setText(empleado.getApellidos());
-                vista.dateNacimientoEmpleado.setDate(empleado.getNacimiento());
+        } else if (e.getSource() == vista.listActividades) {
+            if (vista.listActividades.getSelectedValue() != null) {
+                Actividad actividad = vista.listActividades.getSelectedValue();
+                vista.descripcionActividadTxt.setText(actividad.getDescripcion());
+                vista.duracionActividadTxt.setText(String.valueOf(actividad.getDuracion()));
+                vista.participantesActividadTxt.setText(String.valueOf(actividad.getNumParticipantes()));
+                vista.eventoComboBox.setSelectedItem(actividad.getEventoId().toString());
             }
-        } else if (e.getSource() == vista.listDepartamentos) {
-            if (vista.listDepartamentos.getSelectedValue() != null) {
-                Departamento departamento = vista.listDepartamentos.getSelectedValue();
-                vista.txtDepartamento.setText(departamento.getDepartamento());
+        } else if (e.getSource() == vista.listOrganizadores) {
+            if (vista.listOrganizadores.getSelectedValue() != null) {
+                Organizador organizador = vista.listOrganizadores.getSelectedValue();
+                vista.nombreOrganizadorTxt.setText(organizador.getNombre());
+                vista.emailOrganizadorTxt.setText(organizador.getEmail());
+                vista.edadOrganizadorTxt.setText(String.valueOf(organizador.getEdad()));
             }
         }
     }
 
     private boolean comprobarCamposEvento() {
-        return !vista.txtNombreProducto.getText().isEmpty() &&
-                !vista.txtGradosProducto.getText().isEmpty() &&
-                !vista.txtPrecioProducto.getText().isEmpty() &&
-                comprobarInt(vista.txtGradosProducto.getText()) &&
-                comprobarFloat(vista.txtPrecioProducto.getText());
+        return !vista.nombreEventoTxt.getText().isEmpty() &&
+                !vista.fechaEventoDPicker.getText().isEmpty() &&
+                !vista.precioEventoTxt.getText().isEmpty() &&
+                comprobarInt(vista.precioEventoTxt.getText()) &&
+                !vista.organizadorComboBox.getSelectedItem().toString().isEmpty();
     }
 
-    private boolean comprobarCamposEmpleado() {
+    private boolean comprobarCamposActividad() {
         return !vista.descripcionActividadTxt.getText().isEmpty() &&
                 !vista.duracionActividadTxt.getText().isEmpty() &&
-                !vista.dateNacimientoEmpleado.getText().isEmpty();
+                !vista.participantesActividadTxt.getText().isEmpty() &&
+                comprobarInt(vista.duracionActividadTxt.getText()) &&
+                comprobarInt(vista.participantesActividadTxt.getText()) &&
+                !vista.eventoComboBox.getSelectedItem().toString().isEmpty();
+
     }
 
-    private boolean comprobarCamposDepartamento() {
-        return !vista.txtDepartamento.getText().isEmpty();
+    private boolean comprobarCamposOrganizador() {
+        return !vista.nombreOrganizadorTxt.getText().isEmpty() &&
+                !vista.emailOrganizadorTxt.getText().isEmpty() &&
+                !vista.edadOrganizadorTxt.getText().isEmpty();
     }
 
     private void limpiarCamposEvento() {
@@ -328,45 +339,45 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
         }
     }
 
-    private void listarProductos() {
-        vista.dlmProductos.clear();
-        for (Producto producto : modelo.getEventos()) {
-            vista.dlmProductos.addElement(producto);
+    private void listarEventos() {
+        vista.dlmEventos.clear();
+        for (Evento evento : modelo.getEventos()) {
+            vista.dlmEventos.addElement(evento);
         }
     }
 
-    private void listarEmpleados() {
-        vista.dlmEmpleados.clear();
-        for (Empleado empleado : modelo.getActividades()) {
-            vista.dlmEmpleados.addElement(empleado);
+    private void listarActividades() {
+        vista.dlmActividades.clear();
+        for (Actividad actividad : modelo.getActividades()) {
+            vista.dlmActividades.addElement(actividad);
         }
     }
 
-    private void listarDepartamentos() {
-        vista.dlmDepartamentos.clear();
-        for (Departamento departamento : modelo.getOrganizadores()) {
-            vista.dlmDepartamentos.addElement(departamento);
+    private void listarOrganizadores() {
+        vista.dlmOrganizadores.clear();
+        for (Organizador organizador : modelo.getOrganizadores()) {
+            vista.dlmOrganizadores.addElement(organizador);
         }
     }
 
-    private void listarProductosBusqueda(ArrayList<Producto> lista) {
-        vista.dlmProductosBusqueda.clear();
-        for (Producto producto : lista) {
-            vista.dlmProductosBusqueda.addElement(producto);
+    private void listarEventoBusqueda(ArrayList<Evento> lista) {
+        vista.dlmEventosBusqueda.clear();
+        for (Evento evento : lista) {
+            vista.dlmEventosBusqueda.addElement(evento);
         }
     }
 
-    private void listarEmpleadosBusqueda(ArrayList<Empleado> lista) {
-        vista.dlmEmpleadosBusqueda.clear();
-        for (Empleado empleado : lista) {
-            vista.dlmEmpleadosBusqueda.addElement(empleado);
+    private void listarActividadBusqueda(ArrayList<Actividad> lista) {
+        vista.dlmActividadBusqueda.clear();
+        for (Actividad actividad : lista) {
+            vista.dlmActividadBusqueda.addElement(actividad);
         }
     }
 
-    private void listarDepartamentosBusqueda(ArrayList<Departamento> lista) {
-        vista.dlmDepartamentosBusqueda.clear();
-        for (Departamento departamento : lista) {
-            vista.dlmDepartamentosBusqueda.addElement(departamento);
+    private void listarOrganizadorBusqueda(ArrayList<Organizador> lista) {
+        vista.dlmOrganizadorBusqueda.clear();
+        for (Organizador organizador : lista) {
+            vista.dlmOrganizadorBusqueda.addElement(organizador);
         }
     }
 

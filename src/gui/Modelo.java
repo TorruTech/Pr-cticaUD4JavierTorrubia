@@ -8,8 +8,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 public class Modelo {
@@ -151,7 +151,7 @@ public class Modelo {
 
         evento.setId(dc.getObjectId("_id"));
         evento.setNombre(dc.getString("nombre"));
-        evento.setFecha(LocalDate.parse(dc.getString("fecha")));
+        evento.setFecha(Date.valueOf(dc.getString("fecha")));
         evento.setPrecio(dc.getDouble("precio"));
         evento.setOrganizadorId(dc.getObjectId("organizadorId"));
         return evento;
