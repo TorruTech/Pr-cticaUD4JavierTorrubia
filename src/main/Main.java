@@ -1,6 +1,9 @@
 package main;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import gui.Controlador;
+import gui.Modelo;
+import gui.Vista;
 
 public class Main {
 

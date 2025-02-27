@@ -12,7 +12,7 @@ public class Evento {
     private Date fecha;
     private double precio;
     private ObjectId organizadorId;
-
+    
     // Constructor
     // Constructor
     public Evento() {

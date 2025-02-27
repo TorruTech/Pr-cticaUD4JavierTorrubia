@@ -1,8 +1,8 @@
 package gui;
 
-import barcafeteria.base.Departamento;
-import barcafeteria.base.Empleado;
-import barcafeteria.base.Producto;
+import base.Actividad;
+import base.Evento;
+import base.Organizador;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -15,21 +15,21 @@ import java.util.List;
 public class Modelo {
 
     private MongoClient cliente;
-    private MongoCollection<Document> productos;
-    private MongoCollection<Document> empleados;
-    private MongoCollection<Document> departamentos;
+    private MongoCollection<Document> eventos;
+    private MongoCollection<Document> actividades;
+    private MongoCollection<Document> organizadores;
 
     public void conectar() {
         cliente = new MongoClient();
-        String DATABASE = "BarManolo";
+        String DATABASE = "EventosApp";
         MongoDatabase db = cliente.getDatabase(DATABASE);
 
-        String COLECCION_PRODUCTOS = "Productos";
-        productos = db.getCollection(COLECCION_PRODUCTOS);
-        String COLECCION_EMPLEADOS = "Empleados";
-        empleados = db.getCollection(COLECCION_EMPLEADOS);
-        String COLECCION_DEPARTAMENTOS = "Departamentos";
-        departamentos = db.getCollection(COLECCION_DEPARTAMENTOS);
+        String COLECCION_EVENTOS = "Eventos";
+        eventos = db.getCollection(COLECCION_EVENTOS);
+        String COLECCION_ACTIVIDADES = "Actividades";
+        actividades = db.getCollection(COLECCION_ACTIVIDADES);
+        String COLECCION_ORGANIZADORES = "Organizadores";
+        organizadores = db.getCollection(COLECCION_ORGANIZADORES);
     }
 
     public void desconectar() {
@@ -41,163 +41,168 @@ public class Modelo {
         return cliente;
     }
 
-    public ArrayList<Producto> getProductos() {
-        ArrayList<Producto> lista = new ArrayList<>();
+    public ArrayList<Evento> getEventos() {
+        ArrayList<Evento> lista = new ArrayList<>();
 
-        for (Document document : productos.find()) {
-            lista.add(documentToProducto(document));
+        for (Document document : eventos.find()) {
+            lista.add(documentToEvento(document));
         }
         return lista;
     }
 
-    public ArrayList<Producto> getProductos(String comparador) {
-        ArrayList<Producto> lista = new ArrayList<>();
+    public ArrayList<Evento> getEventos(String comparador) {
+        ArrayList<Evento> lista = new ArrayList<>();
         Document query = new Document();
         List<Document> listaCriterios = new ArrayList<>();
 
         listaCriterios.add(new Document("nombre", new Document("$regex", "/*" + comparador + "/*")));
         query.append("$or", listaCriterios);
 
-        for (Document document : productos.find(query)) {
-            lista.add(documentToProducto(document));
+        for (Document document : eventos.find(query)) {
+            lista.add(documentToEvento(document));
         }
 
         return lista;
     }
 
-    public ArrayList<Empleado> getEmpleados() {
-        ArrayList<Empleado> lista = new ArrayList<>();
+    public ArrayList<Actividad> getActividades() {
+        ArrayList<Actividad> lista = new ArrayList<>();
 
-        for (Document document : empleados.find()) {
-            lista.add(documentToEmpleado(document));
+        for (Document document : actividades.find()) {
+            lista.add(documentToActividad(document));
         }
         return lista;
     }
 
-    public ArrayList<Empleado> getEmpleados(String comparador) {
-        ArrayList<Empleado> lista = new ArrayList<>();
+    public ArrayList<Actividad> getActividades(String comparador) {
+        ArrayList<Actividad> lista = new ArrayList<>();
         Document query = new Document();
         List<Document> listaCriterios = new ArrayList<>();
 
-        listaCriterios.add(new Document("nombre", new Document("$regex", "/*" + comparador + "/*")));
-        listaCriterios.add(new Document("apellidos", new Document("$regex", "/*" + comparador + "/*")));
+        listaCriterios.add(new Document("descripcion", new Document("$regex", "/*" + comparador + "/*")));
         query.append("$or", listaCriterios);
 
-        for (Document document : empleados.find(query)) {
-            lista.add(documentToEmpleado(document));
+        for (Document document : eventos.find(query)) {
+            lista.add(documentToActividad(document));
         }
 
         return lista;
     }
 
-    public ArrayList<Departamento> getDepartamentos() {
-        ArrayList<Departamento> lista = new ArrayList<>();
+    public ArrayList<Organizador> getOrganizadores() {
+        ArrayList<Organizador> lista = new ArrayList<>();
 
-        for (Document document : departamentos.find()) {
-            lista.add(documentToDepartamento(document));
+        for (Document document : organizadores.find()) {
+            lista.add(documentToOrganizador(document));
         }
         return lista;
     }
 
-    public ArrayList<Departamento> getDepartamentos(String comparador) {
-        ArrayList<Departamento> lista = new ArrayList<>();
+    public ArrayList<Organizador> getDepartamentos(String comparador) {
+        ArrayList<Organizador> lista = new ArrayList<>();
         Document query = new Document();
         List<Document> listaCriterios = new ArrayList<>();
 
-        listaCriterios.add(new Document("departamento", new Document("$regex", "/*" + comparador + "/*")));
+        listaCriterios.add(new Document("email", new Document("$regex", "/*" + comparador + "/*")));
         query.append("$or", listaCriterios);
 
-        for (Document document : departamentos.find(query)) {
-            lista.add(documentToDepartamento(document));
+        for (Document document : organizadores.find(query)) {
+            lista.add(documentToOrganizador(document));
         }
 
         return lista;
     }
 
     public void guardarObjeto(Object obj) {
-        if (obj instanceof Producto) {
-            productos.insertOne(objectToDocument(obj));
-        } else if (obj instanceof Empleado) {
-            empleados.insertOne(objectToDocument(obj));
-        } else if (obj instanceof Departamento) {
-            departamentos.insertOne(objectToDocument(obj));
+        if (obj instanceof Evento) {
+            eventos.insertOne(objectToDocument(obj));
+        } else if (obj instanceof Actividad) {
+            actividades.insertOne(objectToDocument(obj));
+        } else if (obj instanceof Organizador) {
+            organizadores.insertOne(objectToDocument(obj));
         }
     }
 
     public void modificarObjeto(Object obj) {
-        if (obj instanceof Producto) {
-            Producto producto = (Producto) obj;
-            productos.replaceOne(new Document("_id", producto.getId()), objectToDocument(producto));
-        } else if (obj instanceof Empleado) {
-            Empleado empleado = (Empleado) obj;
-            empleados.replaceOne(new Document("_id", empleado.getId()), objectToDocument(empleado));
-        } else if (obj instanceof Departamento) {
-            Departamento departamento = (Departamento) obj;
-            departamentos.replaceOne(new Document("_id", departamento.getId()), objectToDocument(departamento));
+        if (obj instanceof Evento) {
+            eventos.replaceOne(objectToDocument(obj), objectToDocument(obj));
+        } else if (obj instanceof Actividad) {
+            actividades.replaceOne(objectToDocument(obj), objectToDocument(obj));
+        } else if (obj instanceof Organizador) {
+            organizadores.replaceOne(objectToDocument(obj), objectToDocument(obj));
         }
     }
 
     public void eliminarObjeto(Object obj) {
-        if (obj instanceof Producto) {
-            Producto producto = (Producto) obj;
-            productos.deleteOne(objectToDocument(producto));
-        } else if (obj instanceof Empleado) {
-            Empleado empleado = (Empleado) obj;
-            empleados.deleteOne(objectToDocument(empleado));
-        } else if (obj instanceof Departamento) {
-            Departamento departamento = (Departamento) obj;
-            departamentos.deleteOne(objectToDocument(departamento));
+        if (obj instanceof Evento) {
+            Evento evento = (Evento) obj;
+            eventos.deleteOne(objectToDocument(evento));
+        } else if (obj instanceof Actividad) {
+            Actividad actividad = (Actividad) obj;
+            actividades.deleteOne(objectToDocument(actividad));
+        } else if (obj instanceof Organizador) {
+            Organizador organizador = (Organizador) obj;
+            organizadores.deleteOne(objectToDocument(organizador));
         }
     }
 
-    public Producto documentToProducto(Document dc) {
-        Producto producto = new Producto();
+    public Evento documentToEvento(Document dc) {
+        Evento evento = new Evento();
 
-        producto.setId(dc.getObjectId("_id"));
-        producto.setNombre(dc.getString("nombre"));
-        producto.setGrados(dc.getInteger("grados"));
-        producto.setPrecio((Float.parseFloat(String.valueOf(dc.getDouble("precio")))));
-        return producto;
+        evento.setId(dc.getObjectId("_id"));
+        evento.setNombre(dc.getString("nombre"));
+        evento.setFecha(LocalDate.parse(dc.getString("fecha")));
+        evento.setPrecio(dc.getDouble("precio"));
+        evento.setOrganizadorId(dc.getObjectId("organizadorId"));
+        return evento;
     }
 
-    public Empleado documentToEmpleado(Document dc) {
-        Empleado empleado = new Empleado();
+    public Actividad documentToActividad(Document dc) {
+        Actividad actividad = new Actividad();
 
-        empleado.setId(dc.getObjectId("_id"));
-        empleado.setNombre(dc.getString("nombre"));
-        empleado.setApellidos(dc.getString("apellidos"));
-        empleado.setNacimiento(LocalDate.parse(dc.getString("nacimiento")));
-        return empleado;
+        actividad.setId(dc.getObjectId("_id"));
+        actividad.setDescripcion(dc.getString("descripcion"));
+        actividad.setDuracion(dc.getDouble("duracion"));
+        actividad.setNumParticipantes(dc.getInteger("numParticipantes"));
+        actividad.setEventoId(dc.getObjectId("eventoId"));
+        return actividad;
     }
 
-    public Departamento documentToDepartamento(Document dc) {
-        Departamento departamento = new Departamento();
+    public Organizador documentToOrganizador(Document dc) {
+        Organizador organizador = new Organizador();
 
-        departamento.setId(dc.getObjectId("_id"));
-        departamento.setDepartamento(dc.getString("departamento"));
-        return departamento;
+        organizador.setId(dc.getObjectId("_id"));
+        organizador.setNombre(dc.getString("nombre"));
+        organizador.setEmail(dc.getString("email"));
+        organizador.setEdad(dc.getInteger("edad"));
+        return organizador;
     }
 
     public Document objectToDocument(Object obj) {
         Document dc = new Document();
 
-        if (obj instanceof Producto) {
-            Producto producto = (Producto) obj;
+        if (obj instanceof Evento) {
+            Evento evento = (Evento) obj;
 
-            dc.append("nombre", producto.getNombre());
-            dc.append("grados", producto.getGrados());
-            dc.append("precio", producto.getPrecio());
-        } else if (obj instanceof Empleado) {
-            Empleado empleado = (Empleado) obj;
+            dc.append("nombre", evento.getNombre());
+            dc.append("fecha", evento.getFecha().toString());
+            dc.append("precio", evento.getPrecio());
+            dc.append("organizadorId", evento.getOrganizadorId());
 
-            dc.append("nombre", empleado.getNombre());
-            dc.append("apellidos", empleado.getApellidos());
-            dc.append("nacimiento", empleado.getNacimiento().toString());
+        } else if (obj instanceof Actividad) {
+            Actividad actividad = (Actividad) obj;
 
-        } else if (obj instanceof Departamento) {
-            Departamento departamento = (Departamento) obj;
+            dc.append("descripcion", actividad.getDescripcion());
+            dc.append("duracion", actividad.getDuracion());
+            dc.append("numParticipantes", actividad.getNumParticipantes());
+            dc.append("eventoId", actividad.getEventoId());
 
-            dc.append("departamento", departamento.getDepartamento());
+        } else if (obj instanceof Organizador) {
+            Organizador organizador = (Organizador) obj;
+
+            dc.append("nombre", organizador.getNombre());
+            dc.append("email", organizador.getEmail());
+            dc.append("edad", organizador.getEdad());
         } else {
             return null;
         }

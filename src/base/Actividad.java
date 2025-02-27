@@ -11,6 +11,9 @@ public class Actividad {
     private ObjectId eventoId;
 
     // Constructor
+    public Actividad() {
+    }
+
     public Actividad(String descripcion, double duracion, int numParticipantes, ObjectId eventoId) {
         this.id = new ObjectId();
         this.descripcion = descripcion;

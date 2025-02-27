@@ -1,8 +1,8 @@
 package gui;
 
-import barcafeteria.base.Departamento;
-import barcafeteria.base.Empleado;
-import barcafeteria.base.Producto;
+import base.Actividad;
+import base.Evento;
+import base.Organizador;
 import com.github.lgooddatepicker.components.DatePicker;
 
 import javax.swing.*;
@@ -11,94 +11,88 @@ import java.awt.*;
 public class Vista extends JFrame {
     private JPanel panelPrincipal;
 
-    // Productos
-    JTextField txtNombreProducto;
-    JTextField txtGradosProducto;
-    JTextField txtPrecioProducto;
-
-    JList<Producto> listProductos;
-
+    // Eventos
+    JTextField nombreEventoTxt;
+    DatePicker fechaEventoDPicker;
+    JTextField precioEventoTxt;
+    JComboBox<Organizador> organizadorComboBox;
     JButton btnAddEvento;
     JButton btnModEvento;
     JButton btnDelEvento;
+    JList<Evento> listEventos;
+    JTextField txtBuscarEvento;
+    JList<Evento> listBusquedaEvento;
 
-    JTextField txtBuscarProducto;
-    JList<Producto> listBusquedaProducto;
-
-    // Empleados
+    // Actividades
     JTextField descripcionActividadTxt;
     JTextField duracionActividadTxt;
-    DatePicker dateNacimientoEmpleado;
-
-    JList<Empleado> listEmpleados;
-
+    JTextField participantesActividadTxt;
+    JComboBox<Evento> eventoComboBox;
+    JList<Actividad> listActividades;
     JButton btnAddActividad;
     JButton btnModActividad;
     JButton btnDelActividad;
+    JTextField txtBuscarActividades;
+    JList<Actividad> listBusquedaActividad;
 
-    JTextField txtBuscarEmpleado;
-    JList<Empleado> listBusquedaEmpleado;
-    private JTextField participantesActividadTxt;
-    private JButton btnAddOrganizador;
-    private JButton btnModOrganizador;
-    private JButton btnDelOrganizador;
-    private JList listOrganizadores;
-    private JList listBusquedaOrganizador;
-    private JTextField txtBuscarOrganizador;
-    private JTextField edadOrganizadorTxt;
-    private JTextField nombreOrganizadorTxt;
-    private JTextField emailOrganizadorTxt;
-
-    // Departamentos
-    JTextField txtDepartamento;
-
-    JList<Departamento> listDepartamentos;
-
-    JButton btnAddDepartamento;
-    JButton btnModDepartamento;
-    JButton btnDelDepartamento;
-
-    JTextField txtBuscarDepartamento;
-    JList<Departamento> listBusquedaDepartamento;
+    // Organizadores
+    JTextField nombreOrganizadorTxt;
+    JTextField emailOrganizadorTxt;
+    JTextField edadOrganizadorTxt;
+    JButton btnAddOrganizador;
+    JButton btnModOrganizador;
+    JButton btnDelOrganizador;
+    JList<Organizador> listOrganizadores;
+    JList<Organizador> listBusquedaOrganizador;
+    JTextField txtBuscarOrganizador;
 
     // Modelos
-    DefaultListModel<Producto> dlmProductos;
-    DefaultListModel<Empleado> dlmEmpleados;
-    DefaultListModel<Departamento> dlmDepartamentos;
-    DefaultListModel<Producto> dlmProductosBusqueda;
-    DefaultListModel<Empleado> dlmEmpleadosBusqueda;
-    DefaultListModel<Departamento> dlmDepartamentosBusqueda;
+    DefaultListModel<Evento> dlmEventos;
+    DefaultListModel<Actividad> dlmActividades;
+    DefaultListModel<Organizador> dlmOrganizadores;
+    DefaultListModel<Evento> dlmEventosBusqueda;
+    DefaultListModel<Actividad> dlmActividadBusqueda;
+    DefaultListModel<Organizador> dlmOrganizadorBusqueda;
+
+    DefaultComboBoxModel<Organizador> dcbOrganizadores;
+    DefaultComboBoxModel<Evento> dcbEventos;
 
     // Menu
     JMenuItem itemConectar;
     JMenuItem itemSalir;
 
     public Vista() {
-        setTitle("Bar Manolo - <SIN CONEXION>");
+        setTitle("App eventos - <SIN CONEXION>");
         setContentPane(panelPrincipal);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(800, 650));
         setResizable(false);
         pack();
         setVisible(true);
-
         inicializarModelos();
         inicializarMenu();
     }
 
     private void inicializarModelos() {
-        dlmProductos = new DefaultListModel<>();
-        listProductos.setModel(dlmProductos);
-        dlmEmpleados = new DefaultListModel<>();
-        listEmpleados.setModel(dlmEmpleados);
-        dlmDepartamentos = new DefaultListModel<>();
-        listDepartamentos.setModel(dlmDepartamentos);
-        dlmProductosBusqueda = new DefaultListModel<>();
-        listBusquedaProducto.setModel(dlmProductosBusqueda);
-        dlmEmpleadosBusqueda = new DefaultListModel<>();
-        listBusquedaEmpleado.setModel(dlmEmpleadosBusqueda);
-        dlmDepartamentosBusqueda = new DefaultListModel<>();
-        listBusquedaDepartamento.setModel(dlmDepartamentosBusqueda);
+        dlmEventos = new DefaultListModel<>();
+        dlmActividades = new DefaultListModel<>();
+        dlmOrganizadores = new DefaultListModel<>();
+        dlmEventosBusqueda = new DefaultListModel<>();
+        dlmActividadBusqueda = new DefaultListModel<>();
+        dlmOrganizadorBusqueda = new DefaultListModel<>();
+
+        dcbOrganizadores = new DefaultComboBoxModel<>();
+        dcbEventos = new DefaultComboBoxModel<>();
+
+        listEventos.setModel(dlmEventos);
+        listActividades.setModel(dlmActividades);
+        listOrganizadores.setModel(dlmOrganizadores);
+        listBusquedaEvento.setModel(dlmEventosBusqueda);
+        listBusquedaActividad.setModel(dlmActividadBusqueda);
+        listBusquedaOrganizador.setModel(dlmOrganizadorBusqueda);
+
+        organizadorComboBox.setModel(dcbOrganizadores);
+        eventoComboBox.setModel(dcbEventos);
     }
 
     private void inicializarMenu() {

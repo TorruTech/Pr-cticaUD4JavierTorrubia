@@ -9,6 +9,9 @@ public class Organizador {
     private int edad;
 
     // Constructor
+    public Organizador() {
+    }
+
     public Organizador(String nombre, String email, int edad) {
         this.nombre = nombre;
         this.email = email;
