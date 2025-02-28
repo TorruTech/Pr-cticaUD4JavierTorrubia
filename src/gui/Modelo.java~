@@ -85,7 +85,7 @@ public class Modelo {
         listaCriterios.add(new Document("descripcion", new Document("$regex", "/*" + comparador + "/*")));
         query.append("$or", listaCriterios);
 
-        for (Document document : eventos.find(query)) {
+        for (Document document : actividades.find(query)) {
             lista.add(documentToActividad(document));
         }
 
@@ -228,5 +228,15 @@ public class Modelo {
             return null;
         }
         return dc;
+    }
+
+    public Evento[] getEventosPorOrganizador(Organizador organizador) {
+        ArrayList<Evento> eventosPorOrganizador = new ArrayList<>();
+
+        for (Document document : eventos.find(new Document("organizadorId", organizador.getId()))) {
+            eventosPorOrganizador.add(documentToEvento(document));
+        }
+
+        return eventosPorOrganizador.toArray(new Evento[0]);
     }
 }

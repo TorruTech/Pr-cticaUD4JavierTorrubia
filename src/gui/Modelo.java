@@ -229,4 +229,24 @@ public class Modelo {
         }
         return dc;
     }
+
+    public Evento[] getEventosPorOrganizador(Organizador organizador) {
+        ArrayList<Evento> eventosPorOrganizador = new ArrayList<>();
+
+        for (Document document : eventos.find(new Document("organizadorId", organizador.getId()))) {
+            eventosPorOrganizador.add(documentToEvento(document));
+        }
+
+        return eventosPorOrganizador.toArray(new Evento[0]);
+    }
+
+    public Actividad[] getActividadesPorEvento(Evento evento) {
+        ArrayList<Actividad> actividadesPorEvento = new ArrayList<>();
+
+        for (Document document : actividades.find(new Document("eventoId", evento.getId()))) {
+            actividadesPorEvento.add(documentToActividad(document));
+        }
+
+        return actividadesPorEvento.toArray(new Actividad[0]);
+    }
 }

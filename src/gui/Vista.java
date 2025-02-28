@@ -22,6 +22,7 @@ public class Vista extends JFrame {
     JList<Evento> listEventos;
     JTextField txtBuscarEvento;
     JList<Evento> listBusquedaEvento;
+    JList<Actividad> listActividadesPorEvento;
 
     // Actividades
     JTextField descripcionActividadTxt;
@@ -44,6 +45,7 @@ public class Vista extends JFrame {
     JButton btnDelOrganizador;
     JList<Organizador> listOrganizadores;
     JList<Organizador> listBusquedaOrganizador;
+    JList<Evento> listEventosPorOrganizador;
     JTextField txtBuscarOrganizador;
 
     // Modelos
@@ -53,6 +55,8 @@ public class Vista extends JFrame {
     DefaultListModel<Evento> dlmEventosBusqueda;
     DefaultListModel<Actividad> dlmActividadBusqueda;
     DefaultListModel<Organizador> dlmOrganizadorBusqueda;
+    DefaultListModel<Actividad> dlmActividadesPorEvento;
+    DefaultListModel<Evento> dlmEventosPorOrganizador;
 
     DefaultComboBoxModel<Organizador> dcbOrganizadores;
     DefaultComboBoxModel<Evento> dcbEventos;
@@ -64,8 +68,10 @@ public class Vista extends JFrame {
 
     public Vista() {
         setTitle("App eventos - <SIN CONEXION>");
+        ImageIcon logo = new ImageIcon("icon.png");
+        this.setIconImage(logo.getImage());
         setContentPane(panelPrincipal);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setPreferredSize(new Dimension(900, 650));
         setResizable(false);
         pack();
@@ -82,6 +88,8 @@ public class Vista extends JFrame {
         dlmEventosBusqueda = new DefaultListModel<>();
         dlmActividadBusqueda = new DefaultListModel<>();
         dlmOrganizadorBusqueda = new DefaultListModel<>();
+        dlmEventosPorOrganizador = new DefaultListModel<>();
+        dlmActividadesPorEvento = new DefaultListModel<>();
 
         dcbOrganizadores = new DefaultComboBoxModel<>();
         dcbEventos = new DefaultComboBoxModel<>();
@@ -92,6 +100,8 @@ public class Vista extends JFrame {
         listBusquedaEvento.setModel(dlmEventosBusqueda);
         listBusquedaActividad.setModel(dlmActividadBusqueda);
         listBusquedaOrganizador.setModel(dlmOrganizadorBusqueda);
+        listEventosPorOrganizador.setModel(dlmEventosPorOrganizador);
+        listActividadesPorEvento.setModel(dlmActividadesPorEvento);
 
         organizadorComboBox.setModel(dcbOrganizadores);
         eventoComboBox.setModel(dcbEventos);

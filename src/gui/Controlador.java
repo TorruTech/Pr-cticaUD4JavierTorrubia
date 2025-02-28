@@ -6,19 +6,14 @@ import base.Organizador;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import util.Util;
-
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.sql.Date;
 
-public class Controlador implements ActionListener, KeyListener, ListSelectionListener {
+public class Controlador extends WindowAdapter implements ActionListener, KeyListener, ListSelectionListener {
     private Modelo modelo;
     private Vista vista;
     private boolean modoOscuro = false;
@@ -30,6 +25,7 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
         addActionListeners(this);
         addKeyListeners(this);
         addListSelectionListeners(this);
+        vista.addWindowListener(this);
 
         try {
             modelo.conectar();
@@ -77,6 +73,8 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
         vista.listEventos.addListSelectionListener(listener);
         vista.listActividades.addListSelectionListener(listener);
         vista.listOrganizadores.addListSelectionListener(listener);
+        vista.listActividadesPorEvento.addListSelectionListener(listener);
+        vista.listEventosPorOrganizador.addListSelectionListener(listener);
     }
 
     private void addKeyListeners(KeyListener listener){
@@ -308,6 +306,7 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
                 vista.fechaEventoDPicker.setDate(evento.getFecha());
                 vista.precioEventoTxt.setText(String.valueOf(evento.getPrecio()));
                 obtenerOrganizadorDeEvento(evento);
+                listarActividadesPorEvento(evento);
             }
         } else if (e.getSource() == vista.listActividades) {
             if (vista.listActividades.getSelectedValue() != null) {
@@ -323,6 +322,7 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
                 vista.nombreOrganizadorTxt.setText(organizador.getNombre());
                 vista.emailOrganizadorTxt.setText(organizador.getEmail());
                 vista.edadOrganizadorTxt.setText(String.valueOf(organizador.getEdad()));
+                listarEventosPorOrganizador(organizador);
             }
         }
     }
@@ -467,6 +467,21 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
         }
     }
 
+    private void listarEventosPorOrganizador(Organizador organizador) {
+        vista.dlmEventosPorOrganizador.clear();
+        for (Evento evento : modelo.getEventosPorOrganizador(organizador)) {
+            vista.dlmEventosPorOrganizador.addElement(evento);
+        }
+    }
+
+    private void listarActividadesPorEvento(Evento evento) {
+        vista.dlmActividadesPorEvento.clear();
+        for (Actividad actividad : modelo.getActividadesPorEvento(evento)) {
+            vista.dlmActividadesPorEvento.addElement(actividad);
+        }
+    }
+
+
     private void setBotonesActivados(boolean activados) {
         vista.btnAddEvento.setEnabled(activados);
         vista.btnModEvento.setEnabled(activados);
@@ -498,5 +513,19 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void windowClosing(WindowEvent windowEvent) {
+        int resp = Util.showConfirmDialog("¿Desea salir de la aplicación?", "Salir");
+        if (resp == JOptionPane.OK_OPTION) {
+            modelo.desconectar();
+            System.exit(0);
+        }
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+
     }
 }
