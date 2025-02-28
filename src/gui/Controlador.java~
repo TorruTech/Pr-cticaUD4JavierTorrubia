@@ -521,13 +521,9 @@ public class Controlador extends WindowAdapter implements ActionListener, KeyLis
 
     @Override
     public void windowClosing(WindowEvent windowEvent) {
-        try {
-            int resp = Util.showConfirmDialog("¿Desea salir de la aplicación?", "Salir");
-            if (resp == JOptionPane.OK_OPTION) {
-                modelo.desconectar();
-                System.exit(0);
-            }
-        } catch (Exception ex) {
+        int resp = Util.showConfirmDialog("¿Desea salir de la aplicación?", "Salir");
+        if (resp == JOptionPane.OK_OPTION) {
+            modelo.desconectar();
             System.exit(0);
         }
     }
