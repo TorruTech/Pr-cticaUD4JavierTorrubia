@@ -358,7 +358,7 @@ public class Controlador implements ActionListener, KeyListener, ListSelectionLi
         return !vista.descripcionActividadTxt.getText().isEmpty() &&
                 !vista.duracionActividadTxt.getText().isEmpty() &&
                 !vista.participantesActividadTxt.getText().isEmpty() &&
-                comprobarFloat(vista.duracionActividadTxt.getText()) &&
+                comprobarInt(vista.duracionActividadTxt.getText()) &&
                 comprobarInt(vista.participantesActividadTxt.getText()) &&
                 !vista.eventoComboBox.getSelectedItem().toString().isEmpty();
 

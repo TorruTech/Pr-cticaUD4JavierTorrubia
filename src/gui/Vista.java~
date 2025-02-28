@@ -66,7 +66,7 @@ public class Vista extends JFrame {
         setTitle("App eventos - <SIN CONEXION>");
         setContentPane(panelPrincipal);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(900, 650));
+        setPreferredSize(new Dimension(1000, 650));
         setResizable(false);
         pack();
         setVisible(true);

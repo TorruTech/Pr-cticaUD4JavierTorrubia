@@ -85,7 +85,7 @@ public class Modelo {
         listaCriterios.add(new Document("descripcion", new Document("$regex", "/*" + comparador + "/*")));
         query.append("$or", listaCriterios);
 
-        for (Document document : actividades.find(query)) {
+        for (Document document : eventos.find(query)) {
             lista.add(documentToActividad(document));
         }
 
